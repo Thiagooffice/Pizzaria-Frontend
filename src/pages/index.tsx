@@ -1,6 +1,9 @@
 import Head from "next/head"
 import styles from '../../styles/home.module.scss'
+
+//components
 import Input from "../components/ui/Input"
+import Button from "../components/ui/Button"
 
 export default function Home() {
   return (
@@ -24,8 +27,13 @@ export default function Home() {
             placeholder="Digite a sua senha"
             type="password"
             />
-
             
+            <Button
+            type="button"
+            loading={true}>
+              Cadastrar
+            </Button>
+
           </form>
         </div>
 
