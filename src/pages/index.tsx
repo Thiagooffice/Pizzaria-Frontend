@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '../../styles/home.module.scss';
 import Link from 'next/link';
 import { useContext, FormEvent, useState } from 'react';
+import {toast} from 'react-toastify'
 
 //components
 import Input from '../components/ui/Input';
@@ -20,12 +21,20 @@ export default function Home() {
   async function handleLogin( event: FormEvent ){
     event.preventDefault()
 
+    if(email === "" || password === ""){
+      toast.warning("Preencha os campos")
+      return
+    }
+    setLoading(true)
+
     let data = {
       email,
       password
     }
 
     await signIn(data)
+
+    setLoading(false)
   }
 
   return (
@@ -54,7 +63,7 @@ export default function Home() {
 
             <Button
               type="submit"
-              loading={false}
+              loading={loading}
             >
               Acessar
             </Button>

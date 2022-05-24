@@ -4,11 +4,14 @@ import Router from 'next/router'
 
 import {api} from '../services/apiClient'
 
+import {toast} from 'react-toastify'
+
 type AuthContextData = {
     user: UserProps
     isAuthenticated: boolean
     signIn: (credencials: SignInProps) => Promise<void>
-    signOut: ()=> void
+    signOut: ()=> void,
+    signUp: (credentials: SignUpProps)=> Promise<void>
 }
 
 type UserProps = {
@@ -24,6 +27,12 @@ type SignInProps = {
 
 type AuthProviderProps = {
     children: ReactNode
+}
+
+type SignUpProps = {
+    name: string,
+    email: string,
+    password: string
 }
 
 export const AuthContext = createContext({} as AuthContextData)
@@ -67,15 +76,40 @@ export function AuthProvider({ children }: AuthProviderProps) {
             //Passar oara proximas requisições o nosso token
             api.defaults.headers['Authorization'] = `Bearer ${token}`
 
-            //Redirecionar o user para o dashboard
+            toast.success("Logado com sucesso!")
 
+            //Redirecionar o user para o dashboard
             Router.push('/dashboard')
             
 
         } catch (err) {
+            toast.error("Erro ao acessar!")
             console.log("Erro ao acessar ", err);
             
         }
+    }
+
+    async function signUp({email,name,password}: SignUpProps){
+        
+        try {
+            
+            const response = await api.post('/users',{
+                name,
+                email,
+                password
+            })
+
+            toast.success("Conta criada com sucesso!")
+        
+            Router.push("/")
+            
+
+        } catch (erro) {
+            toast.error("Erro ao cadastrar!")
+            console.log("Erro ao cadastrar ", erro);
+            
+        }
+        
     }
 
     return (
@@ -83,7 +117,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
             user,
             isAuthenticated,
             signIn,
-            signOut
+            signOut,
+            signUp
         }}>
 
             {children}
